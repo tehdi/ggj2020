@@ -1,0 +1,29 @@
+set number of dice per player
+vs
+set number of dice per game, divided between players however they choose
+WINNER: dice per game, so the balance isn't broken with more or fewer players
+
+
+buy things with sum of rolled dice (6 + 2 = 8)
+    Diana likes this
+    Sam wants less luck
+    we agreed that it must be an exact sum, else players just bank high numbers
+vs
+roll specific dice patterns (6 + 2 = a six and a two)
+    after trying the other two, we don't want this.
+vs
+hybrid: money is a sum, research is a pattern
+    we both like this better than raw sums
+WINNER hybrid: sum-money, pattern-research
+
+
+the player who rolls the dice chooses their fate
+    with input from other players if wanted
+
+carbometer scale = ~0 to 20,000
+    mission values = ~7 to 3,000
+    carbometer start position = ~8,500
+        split it into thirds (~7k per) and start the meter on the low end of the mid third
+    playtest this to figure out what numbers work
+
+TODO
