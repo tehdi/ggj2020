@@ -27,3 +27,9 @@ carbometer scale = ~0 to 20,000
     playtest this to figure out what numbers work
 
 TODO
+- add a timer to limit a "year"
+    players have a limited amount of time available to complete one of the available missions
+    if the timer expires before they do, the missions recycle
+    if they complete one, it shows some info about what they did, then the missions recycle
+    either way, there's a ~5-10s delay before the new missions load and the timer starts again
+    during the delay, any "mission complete" input is ignored

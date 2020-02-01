@@ -3,6 +3,7 @@
 }
 
 .missionBox {
+    float: left;
     width: 500px;
     border: 1px solid green;
     margin: 10px;

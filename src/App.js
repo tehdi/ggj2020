@@ -13,7 +13,14 @@ class App extends React.Component {
         }
     }
 
+    importAll = (r) => {
+        let images = {};
+        r.keys().forEach((item, index) => images[item.replace('./', '')] = r(item));
+        return images;
+    }
+
     render() {
+        const images = this.importAll(require.context('./images', false, /\.png$/));
         const availableMissions = this.selectMissions();
 
         const missionComponents = availableMissions
@@ -22,6 +29,8 @@ class App extends React.Component {
                     key={mission.id}
                     missionId={mission.id}
                     missionDescription={mission.description}
+                    missionActiveCard={images["missionActiveCard" + mission.id + ".png"]}
+                    missionCompleteCard={images["missionCompleteCard" + mission.id + ".png"]}
                     onCompleteMission={this.completeMission} />
             });
 
@@ -31,11 +40,9 @@ class App extends React.Component {
                     <div>{this.state.score} ({this.state.rate < 0 ? "" : "+"}{this.state.rate} / turn)</div>
                 </div>
 
-                <div>
+                <div id="missionDisplay">
                     {missionComponents}
                 </div>
-
-                <button onClick={this.endClimateChange}>End Climate Change</button>
             </div>
         );
     }
@@ -77,25 +84,27 @@ class App extends React.Component {
         const rateChange = mission.rateImpact;
         return this.state.rate + rateChange;
     }
-
-    endClimateChange = () => {
-        this.setState({
-            score: 10,
-            rate: 0,
-            availableMissions: []
-        });
-    }
 }
 
 class Mission extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { complete: false };
+    }
+
     completeMission = () => {
-        this.props.onCompleteMission(this.props.missionId);
+        this.setState({ complete: true });
+        // this.props.onCompleteMission(this.props.missionId);
     }
 
     render() {
         return (
             <div className="missionBox">
                 <div>Mission {this.props.missionId}: {this.props.missionDescription}</div>
+
+                <img id={"missionCard" + this.props.missionId}
+                    src={this.state.complete ? this.props.missionCompleteCard : this.props.missionActiveCard}
+                    alt={"Card for mission " + this.props.missionId} />
                 <button onClick={this.completeMission}>Complete!</button>
             </div>
         )
