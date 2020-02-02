@@ -11,7 +11,7 @@ class App extends React.Component {
 
         this.state = {
             gameStatus: "play",
-            score: gameData.startingScore,
+            currentScore: gameData.startingScore,
             rate: gameData.startingRate,
             winScore: gameData.winScore,
             loseScore: gameData.loseScore,
@@ -44,7 +44,7 @@ class App extends React.Component {
             <div className="App">
                 <div id="play" className={this.state.gameStatus === "play" ? "" : "hidden"}>
                     <div id="stateDisplay">
-                        <div>{this.state.score} / {this.state.loseScore} ({this.state.rate < 0 ? "" : "+"}{this.state.rate} / turn)</div>
+                        <div>{this.state.currentScore} / {this.state.loseScore} ({this.state.rate < 0 ? "" : "+"}{this.state.rate} / turn)</div>
                     </div>
 
                     <div id="missionDisplay">
@@ -90,22 +90,22 @@ class App extends React.Component {
         const completedMission = gameData.missions
             .find(mission => missionId === mission.id);
 
-        const oldRate = this.state.rate;
-        const newRate = this.getNewRate(completedMission);
         const completedMissionIds = this.state.completedMissionIds;
         completedMissionIds.add(missionId);
 
-        const currentScore = this.state.currentScore;
+        const oldRate = this.state.rate;
+        const newScore = this.state.currentScore + oldRate;
+        const newRate = this.getNewRate(completedMission);
+        
         const loseScore = this.state.loseScore;
         const winScore = this.state.winScore;
-        const newGameStatus = currentScore <= winScore ? "win"
-            : currentScore >= loseScore ? "lose"
+        const newGameStatus = newScore <= winScore ? "win"
+            : newScore >= loseScore ? "lose"
                 : "play";
-        console.log("New game status: " + newGameStatus);
 
         this.setState({
             rate: newRate,
-            score: this.state.score + oldRate,
+            currentScore: newScore,
             completedMissionIds: completedMissionIds,
             gameStatus: newGameStatus,
         });
