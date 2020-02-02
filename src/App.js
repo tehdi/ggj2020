@@ -2,6 +2,43 @@ import React from 'react';
 import './App.css';
 import gameData from './gameData.js';
 
+var GAMEPAD;
+var GAMEPADMAP = {
+    8: 'missionButton1',
+    5: 'missionButton2',
+    3: 'missionButton3'
+};
+
+
+var buttonsPressed = [];
+var GAMEPADLOOP = {}; 
+window.addEventListener("gamepadconnected", (event) => {
+    GAMEPAD = event.gamepad;
+    console.log("Controller Connected");
+    GAMEPADLOOP = window.setInterval(function() {
+            var gp = navigator.getGamepads()[0];
+            for (var property in GAMEPADMAP) {
+            if (GAMEPADMAP.hasOwnProperty(property)) {
+              if(gp.buttons[property].pressed) {
+                console.log("Button "+property+" pressed");
+                  document.getElementById(GAMEPADMAP[property]).click(); 
+              }
+            }
+        }
+    }, 200);
+    
+  });
+
+  
+  window.addEventListener("gamepaddisconnected", (event) => {
+    GAMEPAD = {};
+    window.clearInterval(GAMEPADLOOP);
+  });
+
+var checkGP = window.setInterval(function() {
+
+}, 500);
+
 class App extends React.Component {
 
     constructor(props) {
