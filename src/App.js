@@ -79,9 +79,6 @@ class App extends React.Component {
                         {firstMissionComponent}
                         {secondMissionComponent}
                         {thirdMissionComponent}
-                        <div className="clear">
-                            <button id="noMissionButton" onClick={this.onSkipTurn}>None</button>
-                        </div>
                     </div>
                 </div>
                 <div id="win" className={this.state.gameStatus === "win" ? "" : "hidden"}>
