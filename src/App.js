@@ -49,6 +49,9 @@ class App extends React.Component {
 
                     <div id="missionDisplay">
                         {missionComponents}
+                        <div class="clear">
+                            <button id="noMissionButton" onClick={this.skipTurn}>None</button>
+                        </div>
                     </div>
                 </div>
                 <div id="win" className={this.state.gameStatus === "win" ? "" : "hidden"}>
@@ -107,6 +110,22 @@ class App extends React.Component {
             rate: newRate,
             currentScore: newScore,
             completedMissionIds: completedMissionIds,
+            gameStatus: newGameStatus,
+        });
+    }
+
+    skipTurn = () => {
+        const oldRate = this.state.rate;
+        const newScore = this.state.currentScore + oldRate;
+        
+        const loseScore = this.state.loseScore;
+        const winScore = this.state.winScore;
+        const newGameStatus = newScore <= winScore ? "win"
+            : newScore >= loseScore ? "lose"
+                : "play";
+
+        this.setState({
+            currentScore: newScore,
             gameStatus: newGameStatus,
         });
     }

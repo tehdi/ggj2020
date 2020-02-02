@@ -20,3 +20,13 @@
 .hidden {
     display: none;
 }
+.clear {
+    clear: both;
+}
+
+#noMissionButton {
+    margin-left: 10px;
+    height: 100px;
+    width: 1600px;
+    background-color: white;
+}
