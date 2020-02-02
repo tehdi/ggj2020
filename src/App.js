@@ -30,15 +30,36 @@ class App extends React.Component {
         const images = this.importAll(require.context('./images', false, /\.png$/));
         const availableMissions = this.selectMissions(this.state.completedMissionIds);
 
-        const missionComponents = availableMissions
-            .map(mission => {
-                return <Mission
-                    key={mission.id}
-                    missionId={mission.id}
-                    missionActiveCard={images["missionActiveCard" + mission.id + ".png"]}
-                    missionCompleteCard={images["missionCompleteCard" + mission.id + ".png"]}
-                    afterCompleteMission={this.afterCompleteMission} />
-            });
+        const firstMission = availableMissions[0];
+        const secondMission = availableMissions[1];
+        const thirdMission = availableMissions[2];
+
+        const firstMissionComponent =
+            <Mission
+                key={firstMission.id}
+                missionId={firstMission.id}
+                missionActiveCard={images["missionActiveCard" + firstMission.id + ".png"]}
+                missionCompleteCard={images["missionCompleteCard" + firstMission.id + ".png"]}
+                onCompleteMission={this.onCompleteMission}
+                afterCompleteMission={this.afterCompleteMission} />
+        const secondMissionComponent =
+            <Mission
+                key={secondMission.id}
+                missionId={secondMission.id}
+                missionActiveCard={images["missionActiveCard" + secondMission.id + ".png"]}
+                missionCompleteCard={images["missionCompleteCard" + secondMission.id + ".png"]}
+                onCompleteMission={this.onCompleteMission}
+                afterCompleteMission={this.afterCompleteMission} />
+        const thirdMissionComponent =
+            <Mission
+                key={thirdMission.id}
+                missionId={thirdMission.id}
+                missionActiveCard={images["missionActiveCard" + thirdMission.id + ".png"]}
+                missionCompleteCard={images["missionCompleteCard" + thirdMission.id + ".png"]}
+                onCompleteMission={this.onCompleteMission}
+                afterCompleteMission={this.afterCompleteMission} />
+
+        // TODO: Rae start the "skip turn" timer here
 
         return (
             <div className="App">
@@ -48,8 +69,10 @@ class App extends React.Component {
                     </div>
 
                     <div id="missionDisplay">
-                        {missionComponents}
-                        <div class="clear">
+                        {firstMissionComponent}
+                        {secondMissionComponent}
+                        {thirdMissionComponent}
+                        <div className="clear">
                             <button id="noMissionButton" onClick={this.skipTurn}>None</button>
                         </div>
                     </div>
@@ -89,6 +112,11 @@ class App extends React.Component {
         return selectedMissions;
     }
 
+    onCompleteMission = () => {
+        // TODO Rae, use this to reset the "skip turn" timeout
+        console.log("Mission complete!");
+    }
+
     afterCompleteMission = (missionId) => {
         const completedMission = gameData.missions
             .find(mission => missionId === mission.id);
@@ -106,6 +134,12 @@ class App extends React.Component {
             : newScore >= loseScore ? "lose"
                 : "play";
 
+        // re-enable each element with ID "missionButtonX", in case one is the same as last round
+        for (var disableId = 0; disableId < 100; disableId++) {
+            if (document.getElementById("missionButton" + disableId)) {
+                document.getElementById("missionButton" + disableId).disabled = false;
+            }
+        }
         this.setState({
             rate: newRate,
             currentScore: newScore,
@@ -169,6 +203,7 @@ class Mission extends React.Component {
             }
         }
 
+        this.props.onCompleteMission();
         this.setState({ image: this.props.missionCompleteCard });
         setTimeout(() => {
             this.props.afterCompleteMission(this.props.missionId);
