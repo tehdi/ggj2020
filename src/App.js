@@ -12,29 +12,29 @@ var GAMEPADMAP = {
 var round_timer = 0;
 var freeze_timer = false;
 var buttonsPressed = [];
-var GAMEPADLOOP = {}; 
+var GAMEPADLOOP = {};
 window.addEventListener("gamepadconnected", (event) => {
     GAMEPAD = event.gamepad;
     console.log("Controller Connected");
-    GAMEPADLOOP = window.setInterval(function() {
-            var gp = navigator.getGamepads()[0];
-            for (var property in GAMEPADMAP) {
+    GAMEPADLOOP = window.setInterval(function () {
+        var gp = navigator.getGamepads()[0];
+        for (var property in GAMEPADMAP) {
             if (GAMEPADMAP.hasOwnProperty(property)) {
-              if(gp.buttons[property].pressed) {
-                console.log("Button "+property+" pressed");
-                  document.getElementById(GAMEPADMAP[property]).click(); 
-              }
+                if (gp.buttons[property].pressed) {
+                    console.log("Button " + property + " pressed");
+                    document.getElementById(GAMEPADMAP[property]).click();
+                }
             }
         }
     }, 200);
-    
-  });
 
-  
-  window.addEventListener("gamepaddisconnected", (event) => {
+});
+
+
+window.addEventListener("gamepaddisconnected", (event) => {
     GAMEPAD = {};
     window.clearInterval(GAMEPADLOOP);
-  });
+});
 
 class App extends React.Component {
 
@@ -99,40 +99,54 @@ class App extends React.Component {
         // start the "skip turn" timer here
         // if players don't complete a mission within 1 minute, they get nothing for this round
         if (this.state.gameStatus === "play") {
-            this.timeout = setInterval(() => { 
-                if(round_timer >= 8 && !freeze_timer) {
+            this.timeout = setInterval(() => {
+                if (round_timer >= 8 && !freeze_timer) {
                     freeze_timer = true;
-                    this.onSkipTurn() 
+                    this.onSkipTurn()
                     clearInterval(this.timeout);
                 }
-                else if(!freeze_timer) {
+                else if (!freeze_timer) {
                     round_timer++;
                 }
-                console.log("T + :"+round_timer)
+                console.log("T + :" + round_timer)
             }, 1000);
         }
 
-        return (
-            <div className="App">
-                <div id="play" className={this.state.gameStatus === "play" ? "" : "hidden"}>
-                    <div id="stateDisplay">
-                        <div>{this.state.currentScore} / {this.state.loseScore} ({this.state.rate < 0 ? "" : "+"}{this.state.rate} / turn)</div>
-                    </div>
+        if (this.state.gameStatus === "play") {
+            return (
+                <div className="App">
+                    <div id="play" className={this.state.gameStatus === "play" ? "" : "hidden"}>
+                        <div id="stateDisplay">
+                            <div>{this.state.currentScore} / {this.state.loseScore} ({this.state.rate < 0 ? "" : "+"}{this.state.rate} / turn)</div>
+                        </div>
 
-                    <div id="missionDisplay">
-                        {firstMissionComponent}
-                        {secondMissionComponent}
-                        {thirdMissionComponent}
+                        <div id="missionDisplay">
+                            {firstMissionComponent}
+                            {secondMissionComponent}
+                            {thirdMissionComponent}
+                        </div>
                     </div>
                 </div>
-                <div id="win" className={this.state.gameStatus === "win" ? "" : "hidden"}>
-                    <span>You win!</span>
-                </div>
-                <div id="lose" className={this.state.gameStatus === "lose" ? "" : "hidden"}>
-                    <span>You lose.</span>
-                </div>
-            </div>
-        );
+            );
+        } else if (this.state.gameStatus === "win") {
+            return (
+                <div className="App">
+                    <div id="win" className={this.state.gameStatus === "win" ? "" : "hidden"}>
+                        <img src={images["EARTH_YOU_WIN.png"]}
+                            alt="Win image" />
+                    </div>
+                </div >
+            );
+        } else if (this.state.gameStatus === "lose") {
+            return (
+                <div className="App">
+                    <div id="lose" className={this.state.gameStatus === "lose" ? "" : "hidden"}>
+                        <img src={images["EARTH_YOU_LOSE.png"]}
+                            alt="Lose image" />
+                    </div>
+                </div >
+            );
+        }
     }
 
     selectMissions = (completedMissionIds) => {
