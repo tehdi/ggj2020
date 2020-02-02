@@ -9,7 +9,8 @@ var GAMEPADMAP = {
     3: 'missionButton3'
 };
 
-
+var round_timer = 0;
+var freeze_timer = false;
 var buttonsPressed = [];
 var GAMEPADLOOP = {}; 
 window.addEventListener("gamepadconnected", (event) => {
@@ -34,10 +35,6 @@ window.addEventListener("gamepadconnected", (event) => {
     GAMEPAD = {};
     window.clearInterval(GAMEPADLOOP);
   });
-
-var checkGP = window.setInterval(function() {
-
-}, 500);
 
 class App extends React.Component {
 
@@ -102,7 +99,17 @@ class App extends React.Component {
         // start the "skip turn" timer here
         // if players don't complete a mission within 1 minute, they get nothing for this round
         if (this.state.gameStatus === "play") {
-            this.timeout = setTimeout(() => { this.onSkipTurn() }, 60000);
+            this.timeout = setInterval(() => { 
+                if(round_timer >= 8 && !freeze_timer) {
+                    freeze_timer = true;
+                    this.onSkipTurn() 
+                    clearInterval(this.timeout);
+                }
+                else if(!freeze_timer) {
+                    round_timer++;
+                }
+                console.log("T + :"+round_timer)
+            }, 1000);
         }
 
         return (
@@ -160,7 +167,9 @@ class App extends React.Component {
 
         // clear the "skip turn" timeout
         if (this.timeout) {
-            clearTimeout(this.timeout)
+            clearInterval(this.timeout)
+            round_timer = 0;
+            freeze_timer = false;
             this.timeout = null
         }
     }
@@ -222,6 +231,8 @@ class App extends React.Component {
         document.getElementById("missionButton1").disabled = false;
         document.getElementById("missionButton2").disabled = false;
         document.getElementById("missionButton3").disabled = false;
+        round_timer = 0;
+        freeze_timer = false;
     }
 
     getNewRate = (mission) => {
@@ -231,7 +242,9 @@ class App extends React.Component {
 
     componentWillUnmount = () => {
         if (this.timeout) {
-            clearTimeout(this.timeout)
+            freeze_timer = false;
+            round_timer = 0;
+            clearInterval(this.timeout)
         }
     }
 }
