@@ -6,10 +6,14 @@ class App extends React.Component {
 
     constructor(props) {
         super(props);
+
+        const completedMissionIds = new Set();
+
         this.state = {
             score: gameData.startingScore,
             rate: gameData.startingRate,
-            availableMissions: this.selectMissions(),
+            availableMissions: this.selectMissions(completedMissionIds),
+            completedMissionIds: completedMissionIds,
         }
     }
 
@@ -21,7 +25,7 @@ class App extends React.Component {
 
     render() {
         const images = this.importAll(require.context('./images', false, /\.png$/));
-        const availableMissions = this.selectMissions();
+        const availableMissions = this.selectMissions(this.state.completedMissionIds);
 
         const missionComponents = availableMissions
             .map(mission => {
@@ -46,13 +50,16 @@ class App extends React.Component {
         );
     }
 
-    selectMissions = () => {
-        // for now we're not worried about re-presenting the same mission multiple times
-        // but at any given point, we should show three different ones
+    selectMissions = (completedMissionIds) => {
+        // don't present an already-completed mission again
+        // and at any given point, we should show three distinct ones
         const allMissions = gameData.missions;
         const missionIds = new Set();
         while (missionIds.size < 3) {
-            missionIds.add(Math.floor(Math.random() * allMissions.length));
+            const missionId = Math.floor(Math.random() * allMissions.length);
+            if (!completedMissionIds.has(missionId)) {
+                missionIds.add(Math.floor(Math.random() * allMissions.length));
+            }
         }
 
         const selectedMissions = [];
@@ -68,16 +75,17 @@ class App extends React.Component {
 
         const oldRate = this.state.rate;
         const newRate = this.getNewRate(completedMission);
+        const completedMissionIds = this.state.completedMissionIds;
+        completedMissionIds.add(missionId);
+
+        const newAvailableMissions = this.selectMissions(completedMissionIds);
 
         this.setState({
             rate: newRate,
             score: this.state.score + oldRate,
-            availableMissions: this.selectMissions(),
+            availableMissions: newAvailableMissions,
+            completedMissionIds: completedMissionIds,
         });
-    }
-
-    shouldDisplayMissionCompleteButton = () => {
-        return this.state.completeMissionButtonVisible;
     }
 
     getNewRate = (mission) => {
