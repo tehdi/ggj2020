@@ -36,7 +36,7 @@ class App extends React.Component {
         return (
             <div className="App">
                 <div id="stateDisplay">
-                    <div>{this.state.score} ({this.state.rate < 0 ? "" : "+"}{this.state.rate} / turn)</div>
+                    <div>{this.state.score} / 10,000 ({this.state.rate < 0 ? "" : "+"}{this.state.rate} / turn)</div>
                 </div>
 
                 <div id="missionDisplay">
@@ -71,7 +71,7 @@ class App extends React.Component {
 
         this.setState({
             rate: newRate,
-            score: this.state.score - oldRate,
+            score: this.state.score + oldRate,
             availableMissions: this.selectMissions(),
         });
     }
@@ -82,7 +82,7 @@ class App extends React.Component {
 
     getNewRate = (mission) => {
         const rateChange = mission.rateImpact;
-        return this.state.rate - rateChange;
+        return this.state.rate + rateChange;
     }
 }
 
