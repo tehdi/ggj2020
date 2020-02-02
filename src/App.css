@@ -10,6 +10,9 @@
 .missionButton {
     background-color: white;
 }
+.missionButton:disabled {
+    background-color: maroon;
+}
 
 .missionCard {
     vertical-align: top;

@@ -101,10 +101,9 @@ class App extends React.Component {
 
         // start the "skip turn" timer here
         // if players don't complete a mission within 1 minute, they get nothing for this round
-        // if (this.state.gameStatus === "play") {
-        //     // this.props.
-        //     setTimeout(() => { this.skipTurn() }, 3000);
-        // }
+        if (this.state.gameStatus === "play") {
+            this.timeout = setTimeout(() => { this.onSkipTurn() }, 60000);
+        }
 
         return (
             <div className="App">
@@ -117,9 +116,6 @@ class App extends React.Component {
                         {firstMissionComponent}
                         {secondMissionComponent}
                         {thirdMissionComponent}
-                        <div className="clear">
-                            <button id="noMissionButton" onClick={this.skipTurn}>None</button>
-                        </div>
                     </div>
                 </div>
                 <div id="win" className={this.state.gameStatus === "win" ? "" : "hidden"}>
@@ -158,8 +154,15 @@ class App extends React.Component {
     }
 
     onCompleteMission = () => {
-        // reset the "skip turn" timeout
-        console.log("Mission complete!");
+        document.getElementById("missionButton1").disabled = "disabled";
+        document.getElementById("missionButton2").disabled = "disabled";
+        document.getElementById("missionButton3").disabled = "disabled";
+
+        // clear the "skip turn" timeout
+        if (this.timeout) {
+            clearTimeout(this.timeout)
+            this.timeout = null
+        }
     }
 
     afterCompleteMission = (missionId) => {
@@ -191,7 +194,17 @@ class App extends React.Component {
         });
     }
 
-    skipTurn = () => {
+    onSkipTurn = () => {
+        document.getElementById("missionButton1").disabled = "disabled";
+        document.getElementById("missionButton2").disabled = "disabled";
+        document.getElementById("missionButton3").disabled = "disabled";
+
+        setTimeout(() => {
+            this.afterSkipTurn();
+        }, 3000);
+    }
+
+    afterSkipTurn = () => {
         const oldRate = this.state.rate;
         const newScore = this.state.currentScore + oldRate;
 
@@ -205,11 +218,21 @@ class App extends React.Component {
             currentScore: newScore,
             gameStatus: newGameStatus,
         });
+
+        document.getElementById("missionButton1").disabled = false;
+        document.getElementById("missionButton2").disabled = false;
+        document.getElementById("missionButton3").disabled = false;
     }
 
     getNewRate = (mission) => {
         const rateChange = mission.rateImpact;
         return this.state.rate + rateChange;
+    }
+
+    componentWillUnmount = () => {
+        if (this.timeout) {
+            clearTimeout(this.timeout)
+        }
     }
 }
 
@@ -237,12 +260,7 @@ class Mission extends React.Component {
     }
 
     completeMission = () => {
-        console.log("Completing " + this.props.missionId);
-
-        document.getElementById("missionButton1").disabled = "disabled";
-        document.getElementById("missionButton2").disabled = "disabled";
-        document.getElementById("missionButton3").disabled = "disabled";
-
+        console.log("Completing " + this.props.missionId)
         this.props.onCompleteMission();
         this.setState({ image: this.props.missionCompleteCard });
         setTimeout(() => {
