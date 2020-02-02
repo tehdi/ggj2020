@@ -6,7 +6,7 @@ const pixel = require("node-pixel");
 const firmata = require('firmata');
 const http = require('http');
 const port = 8081;
-const max_score = 100;
+const max_score = 10000;
 const boardport = '/dev/tty.usbmodem14101';
 
 
@@ -37,7 +37,7 @@ class TerraSarta {
       this.online = false;
       this._pixels = new PixelStrip({
         board: board,
-        score_count:18, 
+        score_count:10, 
         turn_pins: [8,9,10,11], 
         color_order: PixelStripColorOrder,
         max_score: this.max_score,
@@ -106,7 +106,7 @@ class PixelStrip {
         strip.gamma = Number(strip.gamma || 2.8);
         strip.score = this._score = Math.ceil(Number(strip.score||0));
         console.log("SCORE: "+strip.score);
-        strip.max_score = this._max_score = Math.ceil(Number(strip.max_score||100));
+        strip.max_score = this._max_score = Math.ceil(Number(strip.max_score||10000));
         this._node_pixel = strip.node_pixel = this._node_pixel = {};
         this._board = strip.board;
         
