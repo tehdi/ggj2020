@@ -10,9 +10,12 @@ class App extends React.Component {
         const completedMissionIds = new Set();
 
         this.state = {
+            gameStatus: "play",
             score: gameData.startingScore,
             rate: gameData.startingRate,
-            availableMissions: this.selectMissions(completedMissionIds),
+            winScore: gameData.winScore,
+            loseScore: gameData.loseScore,
+            availableMissions: [],
             completedMissionIds: completedMissionIds,
         }
     }
@@ -39,12 +42,20 @@ class App extends React.Component {
 
         return (
             <div className="App">
-                <div id="stateDisplay">
-                    <div>{this.state.score} / 10,000 ({this.state.rate < 0 ? "" : "+"}{this.state.rate} / turn)</div>
-                </div>
+                <div id="play" className={this.state.gameStatus === "play" ? "" : "hidden"}>
+                    <div id="stateDisplay">
+                        <div>{this.state.score} / {this.state.loseScore} ({this.state.rate < 0 ? "" : "+"}{this.state.rate} / turn)</div>
+                    </div>
 
-                <div id="missionDisplay">
-                    {missionComponents}
+                    <div id="missionDisplay">
+                        {missionComponents}
+                    </div>
+                </div>
+                <div id="win" className={this.state.gameStatus === "win" ? "" : "hidden"}>
+                    <span>You win!</span>
+                </div>
+                <div id="lose" className={this.state.gameStatus === "lose" ? "" : "hidden"}>
+                    <span>You lose.</span>
                 </div>
             </div>
         );
@@ -53,19 +64,25 @@ class App extends React.Component {
     selectMissions = (completedMissionIds) => {
         // don't present an already-completed mission again
         // and at any given point, we should show three distinct ones
-        const allMissions = gameData.missions;
-        const missionIds = new Set();
-        while (missionIds.size < 3) {
-            const missionId = Math.floor(Math.random() * allMissions.length);
+        const allMissionIds = gameData.missions.map(mission => mission.id);
+        const selectedMissionIds = new Set();
+        while (selectedMissionIds.size < 3) {
+            const missionIdIndex = Math.floor(Math.random() * allMissionIds.length);
+            const missionId = allMissionIds[missionIdIndex];
+
             if (!completedMissionIds.has(missionId)) {
-                missionIds.add(Math.floor(Math.random() * allMissions.length));
+                console.log("using " + missionId);
+                selectedMissionIds.add(missionId);
+            } else {
+                console.log("ignoring " + missionId);
             }
         }
 
         const selectedMissions = [];
-        missionIds.forEach(missionId => {
-            selectedMissions.push(allMissions[missionId]);
+        selectedMissionIds.forEach(missionId => {
+            selectedMissions.push(gameData.missions.find(mission => mission.id === missionId))
         })
+        console.log(selectedMissions);
         return selectedMissions;
     }
 
@@ -78,13 +95,19 @@ class App extends React.Component {
         const completedMissionIds = this.state.completedMissionIds;
         completedMissionIds.add(missionId);
 
-        const newAvailableMissions = this.selectMissions(completedMissionIds);
+        const currentScore = this.state.currentScore;
+        const loseScore = this.state.loseScore;
+        const winScore = this.state.winScore;
+        const newGameStatus = currentScore <= winScore ? "win"
+            : currentScore >= loseScore ? "lose"
+                : "play";
+        console.log("New game status: " + newGameStatus);
 
         this.setState({
             rate: newRate,
             score: this.state.score + oldRate,
-            availableMissions: newAvailableMissions,
             completedMissionIds: completedMissionIds,
+            gameStatus: newGameStatus,
         });
     }
 
@@ -116,6 +139,7 @@ class Mission extends React.Component {
     }
 
     completeMission = () => {
+        console.log("Completing " + this.props.missionId);
         this.setState({ image: this.props.missionCompleteCard });
         setTimeout(() => {
             this.props.afterCompleteMission(this.props.missionId);

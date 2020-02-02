@@ -1,7 +1,7 @@
 const gameData = {
     startingScore: 2500,
-    goalScore: 0,
-    failScore: 10000,
+    winScore: 0,
+    loseScore: 10000,
     startingRate: 2500,
     missions: [
         {
