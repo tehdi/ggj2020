@@ -1,0 +1,59 @@
+{
+	"name": "reparis-accord-server",
+	"version": "1.0.0",
+	"description": "Hardware interfacing server for ReParis Accord tabletop game.",
+	"main": "terrasarta.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tehdi/ggj2020/server"
+	},
+	"keywords": [
+		"gamejam",
+		"globalgamejam2020",
+		"global",
+		"game",
+		"jam",
+		"2020",
+		"climate",
+		"change",
+		"tabletop",
+		"game"
+	],
+	"dependencies": {
+		"firmata": {
+			"version": "2.2.0",
+			"from": "firmata@^2.2.0",
+			"resolved": "https://registry.npmjs.org/firmata/-/firmata-2.2.0.tgz"
+		},
+		"johnny-five": {
+			"version": "1.4.0",
+			"from": "johnny-five@^1.0.0",
+			"resolved": "https://registry.npmjs.org/johnny-five/-/johnny-five-1.4.0.tgz"
+		},
+		"node-pixel": {
+			"version": "0.10.2",
+			"from": "node-pixel",
+			"resolved": "https://registry.npmjs.org/node-pixel/-/node-pixel-0.10.2.tgz"
+		},
+		"node-gyp": {
+			"version": "6.1.0",
+			"from": "node-gyp",
+			"resolved": "https://registry.npmjs.org/node-gyp/-/node-gyp-6.1.0.tgz"
+		},
+		"serialport": {
+			"version": "8.0.7",
+			"from": "serialport@^8.0.5",
+			"resolved": "https://registry.npmjs.org/serialport/-/serialport-8.0.7.tgz"
+		},
+		"http-server": {
+			"version": "0.12.1",
+			"from": "http-server",
+			"resolved": "https://registry.npmjs.org/http-server/-/http-server-0.12.1.tgz"
+		}
+	},
+	"author": "Rae O'Neil, Sam Levac-Levey, Diana MacWilliams",
+	"license": "CC-BY-NC-4.0"
+}
