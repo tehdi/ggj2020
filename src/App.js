@@ -99,7 +99,7 @@ class App extends React.Component {
         const oldRate = this.state.rate;
         const newScore = this.state.currentScore + oldRate;
         const newRate = this.getNewRate(completedMission);
-        
+
         const loseScore = this.state.loseScore;
         const winScore = this.state.winScore;
         const newGameStatus = newScore <= winScore ? "win"
@@ -117,7 +117,7 @@ class App extends React.Component {
     skipTurn = () => {
         const oldRate = this.state.rate;
         const newScore = this.state.currentScore + oldRate;
-        
+
         const loseScore = this.state.loseScore;
         const winScore = this.state.winScore;
         const newGameStatus = newScore <= winScore ? "win"
@@ -147,7 +147,9 @@ class Mission extends React.Component {
     render() {
         return (
             <div className="missionBox">
-                <button className="missionButton" onClick={this.completeMission}>
+                <button id={"missionButton" + this.props.missionId}
+                    className="missionButton"
+                    onClick={this.completeMission}>
                     <img id={"missionCard" + this.props.missionId}
                         className="missionCard"
                         src={this.state.image}
@@ -159,6 +161,14 @@ class Mission extends React.Component {
 
     completeMission = () => {
         console.log("Completing " + this.props.missionId);
+
+        // disable each element with ID "missionButtonX"
+        for (var missionId = 0; missionId < 100; missionId++) {
+            if (document.getElementById("missionButton" + missionId)) {
+                document.getElementById("missionButton" + missionId).disabled = "disabled";
+            }
+        }
+
         this.setState({ image: this.props.missionCompleteCard });
         setTimeout(() => {
             this.props.afterCompleteMission(this.props.missionId);
