@@ -99,18 +99,12 @@ class App extends React.Component {
         // start the "skip turn" timer here
         // if players don't complete a mission within 1 minute, they get nothing for this round
         if (this.state.gameStatus === "play") {
-<<<<<<< HEAD
             this.timeout = setInterval(() => { 
                 if(round_timer >= 60 && !freeze_timer) {
-=======
-            this.timeout = setInterval(() => {
-                if (round_timer >= 8 && !freeze_timer) {
->>>>>>> f05934429f6aeda70f512ab69c3ffaa3532c00f9
                     freeze_timer = true;
                     this.onSkipTurn()
                     clearInterval(this.timeout);
                 }
-<<<<<<< HEAD
                 else if(!freeze_timer) {
                     var turnperc = ((round_timer/60) * 100).toFixed(3);
                     var scoreperc = ((this.state.currentScore/10000) * 100).toFixed(3);
@@ -125,9 +119,6 @@ class App extends React.Component {
                         })
                         })
                         .catch(console.log)
-=======
-                else if (!freeze_timer) {
->>>>>>> f05934429f6aeda70f512ab69c3ffaa3532c00f9
                     round_timer++;
                 }
                 console.log("T + :" + round_timer)
