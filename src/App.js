@@ -28,10 +28,9 @@ class App extends React.Component {
                 return <Mission
                     key={mission.id}
                     missionId={mission.id}
-                    missionDescription={mission.description}
                     missionActiveCard={images["missionActiveCard" + mission.id + ".png"]}
                     missionCompleteCard={images["missionCompleteCard" + mission.id + ".png"]}
-                    onCompleteMission={this.completeMission} />
+                    afterCompleteMission={this.afterCompleteMission} />
             });
 
         return (
@@ -63,51 +62,56 @@ class App extends React.Component {
         return selectedMissions;
     }
 
-    completeMission = (missionId) => {
-        console.log("Completing " + missionId);
+    afterCompleteMission = (missionId) => {
         const completedMission = gameData.missions
             .find(mission => missionId === mission.id);
 
+        const oldRate = this.state.rate;
+        const newRate = this.getNewRate(completedMission);
+
         this.setState({
-            score: this.getNewScore(completedMission),
-            rate: this.getNewRate(completedMission),
-            availableMissions: this.selectMissions()
+            rate: newRate,
+            score: this.state.score - oldRate,
+            availableMissions: this.selectMissions(),
         });
     }
 
-    getNewScore = (mission) => {
-        const scoreChange = mission.scoreImpact;
-        return this.state.score + scoreChange;
+    shouldDisplayMissionCompleteButton = () => {
+        return this.state.completeMissionButtonVisible;
     }
 
     getNewRate = (mission) => {
         const rateChange = mission.rateImpact;
-        return this.state.rate + rateChange;
+        return this.state.rate - rateChange;
     }
 }
 
 class Mission extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { complete: false };
-    }
-
-    completeMission = () => {
-        this.setState({ complete: true });
-        // this.props.onCompleteMission(this.props.missionId);
+        this.state = {
+            image: this.props.missionActiveCard,
+        };
     }
 
     render() {
         return (
             <div className="missionBox">
-                <div>Mission {this.props.missionId}: {this.props.missionDescription}</div>
-
-                <img id={"missionCard" + this.props.missionId}
-                    src={this.state.complete ? this.props.missionCompleteCard : this.props.missionActiveCard}
-                    alt={"Card for mission " + this.props.missionId} />
-                <button onClick={this.completeMission}>Complete!</button>
+                <button className="missionButton" onClick={this.completeMission}>
+                    <img id={"missionCard" + this.props.missionId}
+                        className="missionCard"
+                        src={this.state.image}
+                        alt={"Card for mission " + this.props.missionId} />
+                </button>
             </div>
         )
+    }
+
+    completeMission = () => {
+        this.setState({ image: this.props.missionCompleteCard });
+        setTimeout(() => {
+            this.props.afterCompleteMission(this.props.missionId);
+        }, 3000);
     }
 }
 
